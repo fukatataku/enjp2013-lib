@@ -10,8 +10,12 @@ def html2enml(html_str)
     
     # <DOCTYPE...> の削除
     regex = /<!DOCTYPE.*?>/im
+    head_str = <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE en-note SYSTEM "http://xml.evernote.com/pub/enml2.dtd">
+EOF
     if enml_str.match(regex) then
-        enml_str.gsub!(regex, '<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE en-note SYSTEM "http://xml.evernote.com/pub/enml2.dtd">')
+        enml_str.gsub!(regex, head_str)
     end
     
     # <html>, </html> の削除
@@ -26,8 +30,16 @@ def html2enml(html_str)
         enml_str.gsub!(regex, "")
     end
     
-    # body を en-note に変換
-    regex = /<(\/)?body.*?>/im
+    # <body> を <en-note> に変換
+    regex = /<body.*?>/im
+    if enml_str.match(regex) then
+        enml_str.gsub!(regex) {|match|
+            match.gsub(/body/, 'en-note bgcolor="rgb(3, 186, 38)"')
+        }
+    end
+    
+    # </body> を </en-note> に変換
+    regex = /<\/body.*?>/im
     if enml_str.match(regex) then
         enml_str.gsub!(regex) {|match|
             match.gsub(/body/, "en-note")
@@ -35,8 +47,8 @@ def html2enml(html_str)
     end
     
     # imgタグを消す
-    regex = /<img.*?\/>/im
-    enml_str.gsub!(regex, "")
+    #regex = /<img.*?\/>/im
+    #enml_str.gsub!(regex, "")
     
     # imgタグをen-mediaに置き換える
     #regex = /<img src=(.*?)\/>/im
