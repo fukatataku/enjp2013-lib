@@ -1,6 +1,19 @@
 ﻿# -*- encoding: utf-8 -*-
+
 require "rubygems"
 require "sinatra"
+require "digest/md5"
+require "evernote-thrift"
+
+APP_KEY = "fukatataku"
+APP_SECRET = "376dbdc1043a18d7"
+ACS_TOKEN = "S=s1:U=5930c:E=143cc2c1cb3:C=13c747af0b7:P=1cd:A=en-devtoken:H=df21bad2666e29d9020cbd9cf55cebdb"
+
+EN_HOST = "sandbox.evernote.com"
+USER_STORE_URL = "https://#{EN_HOST}/edam/user"
+
+#APP_NOTEBOOK = "kobito_note"
+APP_NOTEBOOK = "TestNotebook"
 
 get "/hello" do
     "Hello NIFTYCloud C4SA @ Evernote Hackathon 2013"
@@ -20,6 +33,26 @@ get "/modify" do
         return
     end
     
-    "create note"
+    # ユーザーストアを作成
+    userStoreTransport = Thrift::HTTPClientTransport.new(USER_STORE_URL)
+    userStoreProtocol = Thrift::BinaryProtocol.new(userStoreTransport)
+    userStore = Evernote::EDAM::UserStore::UserStore::Client.new(userStoreProtocol)
+    
+    # ノートストアを作成
+    noteStoreUrl = userStore.getNoteStoreUrl(ACS_TOKEN)
+    noteStoreTransport = Thrift::HTTPClientTransport.new(noteStoreUrl)
+    noteStoreProtocol = Thrift::BinaryProtocol.new(noteStoreTransport)
+    noteStore = Evernote::EDAM::NoteStore::NoteStore::Client.new(noteStoreProtocol)
+    
+    # 最も直近に変更されたノートを見つける
+    pageSize = 10
+    
+    noteFilter = Evernote::EDAM::NoteStore::NoteFilter.new()
+    filter.setOrder(Evernote::EDAM::Types::NoteSortOrder.UPDATED.getValue())
+    
+    spec = Evernote::EDAM::NoteStore::NoteMetadataResultSpec.new()
+    sepc.setIncludeTitle(true)
+    
+    notes = noteStore.findNoteMetadata(ACS_TOKEN, filter, 0, pageSize, spec)
 end
 
