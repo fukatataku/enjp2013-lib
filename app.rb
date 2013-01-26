@@ -72,7 +72,7 @@ get "/modify_test" do
     target_strings = doc.elements["/en-note/div"].get_text
     
     # MagicServerを叩く
-    req_str = URI.encode("http://cbkx481-abj-app000.c4sa.net/api/magic.json?guid=#{guid}&string=#{target_string}")
+    req_str = URI.encode("http://cbkx481-abj-app000.c4sa.net/api/magic.json?guid=#{guid}&string=#{target_strings}")
     url = URI.parse(URI.encode(req_str))
     req = Net::HTTP::Get.new(url.path+"?"+url.query)
     res = Net::HTTP.start(url.host, url.port) {|http|
