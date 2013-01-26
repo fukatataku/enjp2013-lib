@@ -12,6 +12,8 @@ require "evernote-thrift"
 require "oauth"
 require "oauth/consumer"
 
+require "html2enml"
+
 APP_KEY = "fukatataku"
 APP_SECRET = "376dbdc1043a18d7"
 ACS_TOKEN = "S=s1:U=5930c:E=143cc2c1cb3:C=13c747af0b7:P=1cd:A=en-devtoken:H=df21bad2666e29d9020cbd9cf55cebdb"
