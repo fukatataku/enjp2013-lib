@@ -48,7 +48,7 @@ get "/modify" do
     pageSize = 10
     
     noteFilter = Evernote::EDAM::NoteStore::NoteFilter.new()
-    noteFilter.setOrder(Evernote::EDAM::Types::NoteSortOrder.UPDATED.getValue())
+    noteFilter.setOrder(Evernote::EDAM::Types::NoteSortOrder::UPDATED)
     
     spec = Evernote::EDAM::NoteStore::NoteMetadataResultSpec.new()
     sepc.setIncludeTitle(true)
