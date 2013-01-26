@@ -2,6 +2,7 @@
 
 require "uri"
 require "net/http"
+require "json"
 require "rexml/document"
 require "digest/md5"
 
