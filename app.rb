@@ -1,5 +1,7 @@
 ﻿# -*- encoding: utf-8 -*-
 
+require "rexml/document"
+
 require "rubygems"
 require "sinatra"
 require "digest/md5"
@@ -40,13 +42,6 @@ get "/modify" do
     noteStoreProtocol = Thrift::BinaryProtocol.new(noteStoreTransport)
     noteStore = Evernote::EDAM::NoteStore::NoteStore::Client.new(noteStoreProtocol)
     
-    # ノートブックのリストを取得
-    #notebooks = noteStore.listNotebooks(ACS_TOKEN)
-    #puts "Found #{notebooks.size} notebooks"
-    #notebooks.each do |notebook|
-    #    puts " * #{notebook.name}"
-    #end
-    
     # 最も直近に変更されたノートを見つける
     pageSize = 10
     
@@ -60,8 +55,10 @@ get "/modify" do
     notesMetadata = noteStore.findNotesMetadata(ACS_TOKEN, filter, 0, pageSize, spec)
     targetNoteMetadata = notesMetadata.notes[0]
     guid = targetNoteMetadata.guid
-    targetNote = noteStore.getNote(ACS_TOKEN, guid, false, false, false, false)
-    puts "NOTE TITLE: #{targetNote.title}"
-    puts targetNote.content
+    targetNote = noteStore.getNote(ACS_TOKEN, guid, true, false, false, false)
+        
+    doc = REXML::Document.new(targetNote.content)
+    target_strings = doc.elements["/en-note/div"].get_text
+    puts target_strings
 end
 
