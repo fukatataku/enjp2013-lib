@@ -36,11 +36,7 @@ def html2enml(html_str)
     
     # imgタグを消す
     regex = /<img.*?\/>/im
-    if enml_str.match(regex) then
-        enml_str.gsub!(regex) {|match|
-            match.gsub(/regex/, "")
-        }
-    end
+    enml_str.gsub!(regex, "")
     
     # imgタグをen-mediaに置き換える
     #regex = /<img src=(.*?)\/>/im
