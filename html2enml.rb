@@ -7,7 +7,7 @@ def html2enml(html_str)
     # <DOCTYPE...> の削除
     regex = /<!DOCTYPE.*?>/im
     if enml_str.match(regex) then
-        enml_str.gsub!(regex, "")
+        enml_str.gsub!(regex, '<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE en-note SYSTEM "http://xml.evernote.com/pub/enml2.dtd">')
     end
     
     # <html>, </html> の削除
