@@ -2,7 +2,7 @@
 require "rubygems"
 require "sinatra"
 
-get "/" do
+get "/hello" do
     "Hello NIFTYCloud C4SA @ Evernote Hackathon 2013"
 end
 
@@ -11,3 +11,8 @@ get "/index" do
 
     erb :index
 end
+
+get "/modify" do
+    "modify"
+end
+
