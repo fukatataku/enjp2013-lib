@@ -52,14 +52,14 @@ get "/modify" do
     
     filter = Evernote::EDAM::NoteStore::NoteFilter.new()
     filter.order = Evernote::EDAM::Type::NoteSortOrder::UPDATED
-    filter.words = ""
+    filter.words = 'notebook:"TestNotebook"'
     
     spec = Evernote::EDAM::NoteStore::NotesMetadataResultSpec.new()
     spec.includeTitle = true
     
     notesMetadata = noteStore.findNotesMetadata(ACS_TOKEN, filter, 0, pageSize, spec)
     notesMetadata.notes.each do |note|
-        puts "#{note.title}"
+        puts " * #{note.title}"
     end
 end
 
