@@ -12,7 +12,7 @@ require "evernote-thrift"
 require "oauth"
 require "oauth/consumer"
 
-require "./html2enml"
+require "./lib/html2enml"
 
 APP_KEY = "fukatataku"
 APP_SECRET = "376dbdc1043a18d7"
@@ -82,7 +82,7 @@ get "/modify_test" do
     }
     
     # レスポンスボディからPlanのHTMLを取り出す
-    plan_html = JSON.parse(res.body)
+    plan_html = JSON.parse(res.body)["yourPlan"]
     
     # HTMLをENMLに変換する
     plan_enml = html2enml(plan_html)

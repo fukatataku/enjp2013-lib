@@ -1,11 +1,5 @@
 ﻿# -*- encoding: utf-8 -*-
 
-require "re"
-require "json"
-require "rexml/document"
-
-require "evernote-thrift"
-
 def html2enml(html_str)
     #html = REXML::Document.new(html_str)
     enml_str = html_str
