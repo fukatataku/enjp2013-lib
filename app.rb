@@ -13,6 +13,6 @@ get "/index" do
 end
 
 get "/modify" do
-    "modify"
+    "modify #{params[:id]}"
 end
 
