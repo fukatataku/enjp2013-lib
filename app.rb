@@ -15,10 +15,6 @@ USER_STORE_URL = "https://#{EN_HOST}/edam/user"
 #APP_NOTEBOOK = "kobito_note"
 APP_NOTEBOOK = "TestNotebook"
 
-get "/hello" do
-    "Hello NIFTYCloud C4SA @ Evernote Hackathon 2013"
-end
-
 get "/index" do
     @name   = params[:name]
 
@@ -48,11 +44,11 @@ get "/modify" do
     pageSize = 10
     
     noteFilter = Evernote::EDAM::NoteStore::NoteFilter.new()
-    noteFilter.setOrder(Evernote::EDAM::Type::NoteSortOrder::UPDATED)
+    noteFilter.order = Evernote::EDAM::Type::NoteSortOrder::UPDATED
     
-    spec = Evernote::EDAM::NoteStore::NoteMetadataResultSpec.new()
-    sepc.setIncludeTitle(true)
+    spec = Evernote::EDAM::NoteStore::NotesMetadataResultSpec.new()
+    spec.includeTitle = true
     
-    notes = noteStore.findNoteMetadata(ACS_TOKEN, filter, 0, pageSize, spec)
+    notes = noteStore.findNotesMetadata(ACS_TOKEN, filter, 0, pageSize, spec)
 end
 
