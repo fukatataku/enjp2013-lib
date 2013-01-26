@@ -84,6 +84,12 @@ get "/modify_test" do
     
     # HTMLをENMLに変換する
     plan_enml = html2enml(plan_html)
+    
+    # 既存のノートに上書き
+    targetNote.content = plan_enml
+    noteStore.updateNote(ACS_TOKEN, targetNote)
+    
+    return "Succeeded."
 end
 
 get "/auth" do
