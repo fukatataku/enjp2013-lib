@@ -13,6 +13,13 @@ get "/index" do
 end
 
 get "/modify" do
-    "modify #{params[:id]}"
+    
+    # 変更の種類が「更新」であれば無視して200 OKを返す
+    # ※自分自身による書き換えを無視するため
+    if params[:reason] == "update" then
+        return
+    end
+    
+    "create note"
 end
 
