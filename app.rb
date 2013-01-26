@@ -12,7 +12,7 @@ require "evernote-thrift"
 require "oauth"
 require "oauth/consumer"
 
-require "html2enml"
+require "./html2enml"
 
 APP_KEY = "fukatataku"
 APP_SECRET = "376dbdc1043a18d7"
