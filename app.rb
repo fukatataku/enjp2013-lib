@@ -83,6 +83,7 @@ get "/modify_test" do
     plan_html = JSON.parse(res.body)
     
     # HTMLをENMLに変換する
+    plan_enml = html2enml(plan_html)
 end
 
 get "/auth" do
