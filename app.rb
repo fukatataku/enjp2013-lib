@@ -40,15 +40,22 @@ get "/modify" do
     noteStoreProtocol = Thrift::BinaryProtocol.new(noteStoreTransport)
     noteStore = Evernote::EDAM::NoteStore::NoteStore::Client.new(noteStoreProtocol)
     
+    # ノートブックのリストを取得
+    notebooks = noteStore.listNotebooks(ACS_TOKEN)
+    puts "Found #{notebooks.size} notebooks"
+    notebooks.each do {notebook}
+        puts " * #{notebook.name}"
+    end
+    
     # 最も直近に変更されたノートを見つける
-    pageSize = 10
+#    pageSize = 10
     
-    filter = Evernote::EDAM::NoteStore::NoteFilter.new()
-    filter.order = Evernote::EDAM::Type::NoteSortOrder::UPDATED
+#    filter = Evernote::EDAM::NoteStore::NoteFilter.new()
+#    filter.order = Evernote::EDAM::Type::NoteSortOrder::UPDATED
     
-    spec = Evernote::EDAM::NoteStore::NotesMetadataResultSpec.new()
-    spec.includeTitle = true
+#    spec = Evernote::EDAM::NoteStore::NotesMetadataResultSpec.new()
+#    spec.includeTitle = true
     
-    notes = noteStore.findNotesMetadata(ACS_TOKEN, filter, 0, pageSize, spec)
+#    notes = noteStore.findNotesMetadata(ACS_TOKEN, filter, 0, pageSize, spec)
 end
 
