@@ -58,8 +58,10 @@ get "/modify" do
     spec.includeTitle = true
     
     notesMetadata = noteStore.findNotesMetadata(ACS_TOKEN, filter, 0, pageSize, spec)
-    notesMetadata.notes.each do |note|
-        puts " * #{note.title}"
-    end
+    targetNoteMetadata = notesMetadata.notes[0]
+    guid = targetNoteMetadata.guid
+    targetNote = noteStore.getNote(ACS_TOKEN, guid, false, false, false, false)
+    puts "NOTE TITLE: #{targetNote.title}"
+    puts targetNote.content
 end
 
