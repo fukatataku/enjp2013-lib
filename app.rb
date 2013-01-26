@@ -25,24 +25,7 @@ USER_STORE_URL = "https://#{EN_HOST}/edam/user"
 #APP_NOTEBOOK = "kobito_note"
 APP_NOTEBOOK = "TestNotebook"
 
-get "/index" do
-    @name   = params[:name]
-
-    erb :index
-end
-
-get "/modify" do
-    puts "Web hook OK"
-end
-
 get "/modify_test" do
-    
-    # 変更の種類が「更新」であれば無視して200 OKを返す
-    # ※自分自身による書き換えを無視するため
-    if params[:reason] == "update" then
-        return
-    end
-    
     # ユーザーストアを作成
     userStoreTransport = Thrift::HTTPClientTransport.new(USER_STORE_URL)
     userStoreProtocol = Thrift::BinaryProtocol.new(userStoreTransport)
@@ -74,6 +57,59 @@ get "/modify_test" do
     target_strings = doc.elements["/en-note/div"].get_text
     
     # MagicServerを叩く
+    #req_str = "http://cbkx481-abj-app000.c4sa.net/api/magic.json?guid=#{guid}&string=#{target_strings}"
+    #url = URI.parse(URI.encode(req_str))
+    #req = Net::HTTP::Get.new(url.path+"?"+url.query)
+    #res = Net::HTTP.start(url.host, url.port) {|http|
+    #    http.request(req)
+    #}
+    
+    # レスポンスボディからPlanのHTMLを取り出す
+    #plan_html = JSON.parse(res.body)["yourPlan"]
+    
+    # HTMLをENMLに変換する
+    #plan_enml = html2enml(plan_html)
+    plan_enml = <<EOF
+EOF
+    puts plan_enml
+    
+    # 既存のノートに上書き
+    targetNote.content = plan_enml
+    noteStore.updateNote(ACS_TOKEN, targetNote)
+    
+    return "Succeeded."
+end
+
+get "/modify" do
+    
+    # 変更の種類が「更新」であれば無視して200 OKを返す
+    # ※自分自身による書き換えを無視するため
+    if params[:reason] == "update" then
+        return
+    end
+    
+    # 変更されたノートのGUIDをクエリから取得する
+    guid = params[:guid]
+    
+    # ユーザーストアを作成
+    userStoreTransport = Thrift::HTTPClientTransport.new(USER_STORE_URL)
+    userStoreProtocol = Thrift::BinaryProtocol.new(userStoreTransport)
+    userStore = Evernote::EDAM::UserStore::UserStore::Client.new(userStoreProtocol)
+    
+    # ノートストアを作成
+    noteStoreUrl = userStore.getNoteStoreUrl(ACS_TOKEN)
+    noteStoreTransport = Thrift::HTTPClientTransport.new(noteStoreUrl)
+    noteStoreProtocol = Thrift::BinaryProtocol.new(noteStoreTransport)
+    noteStore = Evernote::EDAM::NoteStore::NoteStore::Client.new(noteStoreProtocol)
+    
+    # ノートを取得する
+    targetNote = noteStore.getNote(ACS_TOKEN, guid, true, false, false, false)
+    
+    # ノートの内容を取得 (１行目だけ)
+    doc = REXML::Document.new(targetNote.content)
+    target_strings = doc.elements["/en-note/div"].get_text
+    
+    # MagicServerを叩く
     req_str = "http://cbkx481-abj-app000.c4sa.net/api/magic.json?guid=#{guid}&string=#{target_strings}"
     url = URI.parse(URI.encode(req_str))
     req = Net::HTTP::Get.new(url.path+"?"+url.query)
@@ -86,7 +122,6 @@ get "/modify_test" do
     
     # HTMLをENMLに変換する
     plan_enml = html2enml(plan_html)
-    #targetNote.resource = [resourcce]
     puts plan_enml
     
     # 既存のノートに上書き
