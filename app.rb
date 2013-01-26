@@ -1,10 +1,12 @@
 ﻿# -*- encoding: utf-8 -*-
 
+require "uri"
+require "net/http"
 require "rexml/document"
+require "digest/md5"
 
 require "rubygems"
 require "sinatra"
-require "digest/md5"
 require "evernote-thrift"
 
 APP_KEY = "fukatataku"
@@ -24,6 +26,10 @@ get "/index" do
 end
 
 get "/modify" do
+    puts "Web hook OK"
+end
+
+get "/modify_test" do
     
     # 変更の種類が「更新」であれば無視して200 OKを返す
     # ※自分自身による書き換えを無視するため
@@ -56,9 +62,22 @@ get "/modify" do
     targetNoteMetadata = notesMetadata.notes[0]
     guid = targetNoteMetadata.guid
     targetNote = noteStore.getNote(ACS_TOKEN, guid, true, false, false, false)
-        
+    
+    # ノートの内容を取得 (１行目だけ)
     doc = REXML::Document.new(targetNote.content)
     target_strings = doc.elements["/en-note/div"].get_text
-    puts target_strings
+    
+    # MagicServerを叩く
+    req_str = URI.encode("http://cbkx481-abj-app000.c4sa.net/api/magic.json?guid=#{guid}&string=#{target_string}")
+    url = URI.parse(URI.encode(req_str))
+    req = Net::HTTP::Get.new(url.path+"?"+url.query)
+    res = Net::HTTP.start(url.host, url.port) {|http|
+        http.request(req)
+    }
+    
+    # レスポンスボディからPlanのHTMLを取り出す
+    plan_html = JSON.parse(res.body)
+    
+    # HTMLをENMLに変換する
 end
 
