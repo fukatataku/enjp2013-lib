@@ -86,6 +86,7 @@ get "/modify_test" do
     
     # HTMLをENMLに変換する
     plan_enml = html2enml(plan_html)
+    #targetNote.resource = [resourcce]
     puts plan_enml
     
     # 既存のノートに上書き

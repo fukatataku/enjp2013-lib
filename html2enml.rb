@@ -1,5 +1,9 @@
 ﻿# -*- encoding: utf-8 -*-
 
+require "open-uri"
+require "digest/md5"
+require "evernote-thrift"
+
 def html2enml(html_str)
     #html = REXML::Document.new(html_str)
     enml_str = html_str
@@ -30,5 +34,52 @@ def html2enml(html_str)
         }
     end
     
-    return enml_str
+    # imgタグを消す
+    regex = /<img.*?\/>/im
+    if enml_str.match(regex) then
+        enml_str.gsub!(regex) {|match|
+            match.gsub(/regex/, "")
+        }
+    end
+    
+    # imgタグをen-mediaに置き換える
+    #regex = /<img src=(.*?)\/>/im
+    #enml_str.gsub!(regex) { |match|
+    #    match.gsub(/img/, "en-media")
+    #}
+    
+    # en-mediaタグからsrcを取り出す
+    #regex = /<img src="(.+?)".*?>/im
+    #match_strs = enml_str.scan(regex)
+    #match_strs.each do |match_str|
+    #    reg = /src="(.+?)"/im
+    #    match_str.
+    #end
+    
+    #match = enml_str.match(regex)
+    #img_src = match[0]
+    #ext = File.extname(img_src).sub(".", "")
+    
+    # srcをダウンロード
+    #img = open(img_src)
+    
+    # data
+    #data = Evernote::EDAM::Type::Data.new
+    #data.size = img.size
+    #data.bodyHash = hashFunc.digest(img)
+    #data.body = image
+    
+    # resource
+    #resource = Evernote::EDAM::Type::Resource.new
+    #resource.mime = "image/#{ext}"
+    #resource.data = data
+    #resource.attributes = Evernote::EDAM::Type::ResourceAttributes.new
+    #resource.attributes.fileName = "image.#{ext}"
+    
+    # hash
+    #hashHex = hashFunc.hexdigest(img)
+    
+    # imgタグを変換
+    
+    return enml_str#, resource
 end
