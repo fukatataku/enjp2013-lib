@@ -43,8 +43,8 @@ get "/modify" do
     # 最も直近に変更されたノートを見つける
     pageSize = 10
     
-    noteFilter = Evernote::EDAM::NoteStore::NoteFilter.new()
-    noteFilter.order = Evernote::EDAM::Type::NoteSortOrder::UPDATED
+    filter = Evernote::EDAM::NoteStore::NoteFilter.new()
+    filter.order = Evernote::EDAM::Type::NoteSortOrder::UPDATED
     
     spec = Evernote::EDAM::NoteStore::NotesMetadataResultSpec.new()
     spec.includeTitle = true
