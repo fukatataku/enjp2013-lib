@@ -9,11 +9,14 @@ require "digest/md5"
 require "rubygems"
 require "sinatra"
 require "evernote-thrift"
+require "oauth"
+require "oauth/consumer"
 
 APP_KEY = "fukatataku"
 APP_SECRET = "376dbdc1043a18d7"
 ACS_TOKEN = "S=s1:U=5930c:E=143cc2c1cb3:C=13c747af0b7:P=1cd:A=en-devtoken:H=df21bad2666e29d9020cbd9cf55cebdb"
 
+EN_SERVER = "https://sandbox.evernote.com"
 EN_HOST = "sandbox.evernote.com"
 USER_STORE_URL = "https://#{EN_HOST}/edam/user"
 
@@ -80,5 +83,23 @@ get "/modify_test" do
     plan_html = JSON.parse(res.body)
     
     # HTMLをENMLに変換する
+end
+
+get "/auth" do
+    # コールバックURL
+    cb_url = "http://evernote.com/intl/jp/"
+    
+    # リクエストトークンを要求
+    consumer = OAuth::Consumer.new(APP_KEY, APP_SECRET, {
+        :site => EN_SERVER,
+        :request_token_path => "/oauth",
+        :access_token_path => "/oauth",
+        :authorize_path => "/OAuth.action"
+    })
+    req_token = consumer.get_request_token(:oauth_callback => cb_url)
+    
+    # 認証用URLにリダイレクト
+    session[:request_token] = req_token
+    redirect req_token.authorize_url
 end
 
